@@ -10,13 +10,27 @@ let userSchema = new Schema({
         required: true,
         unique : true
         },
-    password: String,
+    password: {
+        type: String,
+        required: true
+        },
     email: {
         type: String,
         required: true,
         unique : true
         },
-    age: Number
+    age: {
+        type: Number,
+        min:18,
+        max: 120,
+        required:true
+    },
+    records: [
+        {
+            time: {type: Date},
+            text: {type: String}
+        }
+    ]
 })
 
 const User = mongoose.model("User", userSchema);

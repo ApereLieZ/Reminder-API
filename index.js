@@ -23,7 +23,7 @@ function connect() {
       .on('error', console.log)
       .on('disconnected', connect)
       .once('open', listen);
-    return mongoose.connect("mongodb://localhost:27017", {
+    return mongoose.connect("mongodb://localhost:27017/reminder", {
       keepAlive: true,
       useNewUrlParser: true,
       useUnifiedTopology: true
