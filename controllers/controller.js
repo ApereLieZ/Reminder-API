@@ -1,6 +1,7 @@
 
 const jwt = require("jsonwebtoken");
-const secureKey = "adawdiaefsjkjnAWDJoAdjioAWJDop";
+require("dotenv").config();
+const secureKey = process.env.SECUREKEY;;
 const UserDB = require("../db/models/user");
 
 

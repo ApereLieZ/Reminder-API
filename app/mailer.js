@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-
+require("dotenv").config();
 async function SendNotification(email, text) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
@@ -10,8 +10,8 @@ async function SendNotification(email, text) {
         port: 587,
         secure: false,
         auth: {
-            user: 'nodejsyivanov@gmail.com',
-            pass: '1qaZXCVB'
+            user: process.env.MAIL,
+            pass: process.env.MAILPASSWORD
         }
     });
 

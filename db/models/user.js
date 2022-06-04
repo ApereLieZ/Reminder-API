@@ -50,7 +50,7 @@ class UserDB extends EventEmmiter {
             await user.save();
             return user;
 
-        } catch (e) {
+        } catch (err) {
             throw err;
         }
     }
@@ -64,7 +64,7 @@ class UserDB extends EventEmmiter {
         }
     }
 
-    async getAllRecordsWithEmail(){
+    async getAllRecordsWithEmail() {
         try {
             const UserArr = await User.find().select("email records");
             return UserArr;
@@ -76,11 +76,14 @@ class UserDB extends EventEmmiter {
 
     async setRecord(userID, recordData) {
         try {
-            
             const user = await User.findOneAndUpdate({ _id: userID }, {
                 $push: { records: recordData }
-            })
-            this.emit("setRecord", {email: user.email, ...recordData});
+            }, { new: true })
+            
+            let recordNewElement = await User.aggregate([
+                { $project: { id: 1, records: { $slice: [ "$records", -1 ] } } }
+             ]);
+            this.emit("setRecord", { _id: userID, email: user.email, records: {_id : recordNewElement[0]._id, ...recordData} });
         } catch (err) {
             console.log(err);
             throw err;
@@ -91,9 +94,9 @@ class UserDB extends EventEmmiter {
     async getRecords(userID) {
         try {
             const data = await User.findById(userID).select("records");
-            
+
             const records = data.records;
-            return  records;
+            return records;
 
         } catch (err) {
             throw err;
@@ -107,7 +110,7 @@ class UserDB extends EventEmmiter {
                 { _id: userID },
                 { $pull: { records: { _id: recordID } } }
             )
-            this.emit("deleteRecord", {userID: userID ,recordID: recordID});
+            this.emit("deleteRecord", { userID: userID, recordID: recordID });
         } catch (err) {
             throw err;
         }
@@ -119,7 +122,7 @@ class UserDB extends EventEmmiter {
                 { _id: userID },
                 { $set: { records: [] } }
             )
-            this.emit("deleteRecord", {userID: userID});
+            this.emit("deleteRecord", { userID: userID });
         } catch (err) {
             throw err;
         }
